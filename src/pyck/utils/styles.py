@@ -4,13 +4,18 @@ def _colors_256(color_: int, s: str):
 
 
 def red(s: str):
-    """Returns a string in red color."""
+    """Returns a string in red."""
     return _colors_256(160, s)
 
 
 def grey(s: str):
-    """Returns a string in grey color."""
+    """Returns a string in grey."""
     return _colors_256(240, s)
+
+
+def purple(s: str):
+    """Returns a string in purple."""
+    return _colors_256(21, s)
 
 
 def bold(s: str):
