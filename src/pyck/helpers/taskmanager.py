@@ -28,7 +28,7 @@ class TaskManager:
         """Initiate a Task Manager."""
         self.tasks = []
 
-    def add_task(self, function, parameters: list):
+    def add_task(self, function, parameters: list = ""):
         """Add task to run later."""
         self.tasks.append({"function": function, "parameters": parameters})
 
@@ -37,26 +37,29 @@ class TaskManager:
         results = []
         executor = ThreadPoolExecutorStackTraced(max_workers=10)
         futures = []
+        if description:
+            print(description)
         for task in self.tasks:
-            if type(task["parameters"]) is not list:
+            if task["parameters"] and type(task["parameters"]) is not list:
                 futures = [executor.submit(task["function"], task["parameters"])]
-            else:
+            elif type(task["parameters"]) is list:
                 futures = [
                     executor.submit(task["function"], parameter)
                     for parameter in task["parameters"]
                 ]
-        if description:
-            print(description)
-        else:
-            print("Running tasks...")
+            else:
+                futures = [executor.submit(task["function"])]
         if wait:
             with alive_bar(len(futures)) as bar:
                 for future in as_completed(futures, timeout=10):
                     exception = future.exception()
                     if not exception:
                         results.append(future.result())
+                    else:
+                        results.append(exception)
                     bar()
             executor.shutdown()
         else:
             executor.shutdown(wait=False)
+        self.tasks = []  # Clear tasks
         return results
