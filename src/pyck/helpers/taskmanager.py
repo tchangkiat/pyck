@@ -1,6 +1,8 @@
 from alive_progress import alive_bar
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+from pyck.helpers.logging import Logging
+
 
 class TaskManager:
     def __init__(self):
@@ -12,7 +14,7 @@ class TaskManager:
         self.tasks.append({"function": function, "parameters": parameters})
 
     def run_tasks(
-        self, description: str = "", wait: bool = True
+        self, description: str = "", wait: bool = True, logExceptions=True
     ) -> tuple[list[any], list[Exception]]:
         """Run tasks that are added"""
         results = []
@@ -46,4 +48,8 @@ class TaskManager:
         else:
             executor.shutdown(wait=False)
         self.tasks = []  # Clear tasks
+        if logExceptions:
+            log = Logging.get_instance()
+            for exception in exceptions:
+                log.exception(exception)
         return results, exceptions
