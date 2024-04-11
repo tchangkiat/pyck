@@ -48,7 +48,7 @@ class Logging(object):
             print("\n" + grey(additional_message))
             self._logger.error(additional_message)
         if len(resources) != 0:
-            resources_str = "\nResources to assist you with resolving this error:"
+            resources_str = "\nResources:"
             resource_count = 0
             for resource in resources:
                 resource_count += 1
@@ -56,7 +56,7 @@ class Logging(object):
             print(resources_str)
         print(bold(red("-------------------- ----- --------------------\n")))
 
-    def error_from_exception(self, exception: Exception, resources: list[str] = []):
+    def exception(self, exception: Exception, resources: list[str] = []):
         self.error(
             exception,
             additional_message="".join(
