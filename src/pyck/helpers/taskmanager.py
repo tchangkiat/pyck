@@ -51,5 +51,8 @@ class TaskManager:
         if logExceptions:
             log = Logging.get_instance()
             for exception in exceptions:
-                log.exception(exception)
+                log.exception(
+                    exception,
+                    exception.resources if hasattr(exception, "resources") else [],
+                )
         return results, exceptions
