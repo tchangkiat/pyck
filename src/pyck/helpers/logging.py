@@ -1,5 +1,6 @@
 import logging
 from logging.handlers import RotatingFileHandler
+import traceback
 
 from pyck.utils.styles import red, grey, bold
 
@@ -34,14 +35,28 @@ class Logging(object):
         print(grey(message))
         self._logger.info(message)
 
-    def error(self, message: str, additional_message: str = ""):
+    def error(
+        self, message: str, additional_message: str = ""
+    ) -> tuple[list[any], list[Exception]]:
         """Logs an ERROR message."""
         print(
             bold(red("\n-------------------- Error --------------------\n"))
             + bold(message)
         )
+        self._logger.error(message)
         if additional_message:
-            print("\n" + additional_message)
+            print("\n" + grey(additional_message))
             self._logger.error(additional_message)
         print(bold(red("-------------------- ----- --------------------\n")))
-        self._logger.error(message)
+
+    def error_from_exception(self, exception: Exception):
+        self.error(
+            exception,
+            additional_message="".join(
+                traceback.format_exception(
+                    type(exception),
+                    value=exception,
+                    tb=exception.__traceback__,
+                )
+            ),
+        )

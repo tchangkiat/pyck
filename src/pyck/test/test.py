@@ -28,11 +28,4 @@ tm2.add_task(test_task, parameters=["hello 4"])
 results, exceptions = tm2.run_tasks("Test Task Manager 2 - Exception")
 print(results)
 print(exceptions)
-log.error(
-    "".join(
-        traceback.format_exception(
-            type(exceptions[0]), value=exceptions[0], tb=exceptions[0].__traceback__
-        )
-    ),
-    "This exception is intentional - it tests the exception catching in concurrent.futures and logging of an error message.",
-)
+log.error_from_exception(exceptions[0])
