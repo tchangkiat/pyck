@@ -3,6 +3,7 @@ from pyck.helpers.taskmanager import TaskManager
 from pyck.utils.styles import purple
 from pyck.aws.account import AwsAccount
 from pyck.aws.ec2 import EC2
+from pyck.aws.organizations import Organizations
 
 
 def test_task(random_text):
@@ -35,3 +36,7 @@ print("Assumed Role of AWS Account ID: " + str(aws_account))
 ec2_helper = EC2(aws_account)
 valid_regions = ec2_helper.get_valid_regions()
 print("Valid Regions: " + ", ".join(valid_regions))
+print("Accounts in AWS Organizations:")
+org_helper = Organizations(aws_account)
+accounts = org_helper.get_accounts()
+print(accounts)

@@ -1,5 +1,9 @@
+from pyck.aws.account import AwsAccount
+
+
 class EC2:
-    def __init__(self, aws_account):
+    def __init__(self, aws_account: AwsAccount):
+        """Initiate an Amazon EC2 helper"""
         self.client = aws_account.session.client("ec2")
 
     def get_valid_regions(self, filter: list[str] = []):
