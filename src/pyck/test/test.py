@@ -28,4 +28,7 @@ tm2.add_task(test_task, parameters=["hello 4"])
 results, exceptions = tm2.run_tasks("Test Task Manager 2 - Exception")
 print(results)
 print(exceptions)
-log.error_from_exception(exceptions[0])
+log.error_from_exception(
+    exceptions[0],
+    ["Google: https://google.com", "StackOverflow: https://stackoverflow.com"],
+)

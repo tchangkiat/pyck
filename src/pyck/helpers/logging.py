@@ -36,8 +36,8 @@ class Logging(object):
         self._logger.info(message)
 
     def error(
-        self, message: str, additional_message: str = ""
-    ) -> tuple[list[any], list[Exception]]:
+        self, message: str, additional_message: str = "", resources: list[str] = []
+    ):
         """Logs an ERROR message."""
         print(
             bold(red("\n-------------------- Error --------------------\n"))
@@ -47,9 +47,16 @@ class Logging(object):
         if additional_message:
             print("\n" + grey(additional_message))
             self._logger.error(additional_message)
+        if len(resources) != 0:
+            resources_str = "\nResources to assist you with resolving this error:"
+            resource_count = 0
+            for resource in resources:
+                resource_count += 1
+                resources_str += "\n[" + str(resource_count) + "] " + resource
+            print(resources_str)
         print(bold(red("-------------------- ----- --------------------\n")))
 
-    def error_from_exception(self, exception: Exception):
+    def error_from_exception(self, exception: Exception, resources: list[str] = []):
         self.error(
             exception,
             additional_message="".join(
@@ -59,4 +66,5 @@ class Logging(object):
                     tb=exception.__traceback__,
                 )
             ),
+            resources=resources,
         )

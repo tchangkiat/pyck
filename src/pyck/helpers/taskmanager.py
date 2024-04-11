@@ -11,7 +11,9 @@ class TaskManager:
         """Add task to run later."""
         self.tasks.append({"function": function, "parameters": parameters})
 
-    def run_tasks(self, description: str = "", wait: bool = True):
+    def run_tasks(
+        self, description: str = "", wait: bool = True
+    ) -> tuple[list[any], list[Exception]]:
         """Run tasks that are added"""
         results = []
         exceptions = []
