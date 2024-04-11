@@ -36,7 +36,11 @@ class Logging(object):
         self._logger.info(message)
 
     def error(
-        self, message: str, additional_message: str = "", resources: list[str] = []
+        self,
+        message: str,
+        resources: list[str] = [],
+        show_traceback: bool = False,
+        traceback_detail: str = "",
     ):
         """Logs an ERROR message."""
         print(
@@ -44,9 +48,10 @@ class Logging(object):
             + bold(message)
         )
         self._logger.error(message)
-        if additional_message:
-            print("\n" + grey(additional_message))
-            self._logger.error(additional_message)
+        if traceback_detail:
+            if show_traceback:
+                print("\n" + grey(traceback_detail))
+            self._logger.error(traceback_detail)
         if len(resources) != 0:
             resources_str = "\nResources:"
             resource_count = 0
@@ -56,15 +61,19 @@ class Logging(object):
             print(resources_str)
         print(bold(red("-------------------- ----- --------------------\n")))
 
-    def exception(self, exception: Exception, resources: list[str] = []):
+    def exception(
+        self, exception: Exception, resources: list[str] = [], show_traceback=False
+    ):
+        """Logs an ERROR message based on an exception"""
         self.error(
             exception,
-            additional_message="".join(
+            resources=resources,
+            show_traceback=show_traceback,
+            traceback_detail="".join(
                 traceback.format_exception(
                     type(exception),
                     value=exception,
                     tb=exception.__traceback__,
                 )
             ),
-            resources=resources,
         )

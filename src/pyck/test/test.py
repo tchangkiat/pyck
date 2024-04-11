@@ -1,6 +1,3 @@
-import time
-import traceback
-
 from pyck.helpers.logging import Logging
 from pyck.helpers.taskmanager import TaskManager
 from pyck.utils.styles import purple
@@ -13,7 +10,9 @@ def test_task(random_text):
 
 def test_task_exception():
     print("test_task_exception")
-    raise Exception("Test Exception")
+    ex = Exception("Test Exception")
+    ex.resources = ["Google: https://google.com"]
+    raise ex
 
 
 log = Logging.get_instance()
