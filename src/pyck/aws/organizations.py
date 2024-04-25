@@ -3,17 +3,17 @@ from pyck.aws.service import Service
 from pyck.helpers.logging import Logging
 
 
-class Organizations(Service):
+class Organization(Service):
     def __init__(self, aws_account: AwsAccount):
-        """Initiate an AWS Organizations helper"""
+        """Initiate an AWS Organizations object with a payer account"""
         self.client = aws_account.session.client("organizations")
 
     def get_accounts(self):
-        """Get accounts in AWS Organizations"""
+        """Get accounts in the AWS organization"""
         try:
             result = super().get(self.client, "list_accounts", "Accounts")
             return [
-                {"Id": o["Id"], "Name": o["Name"]}
+                {"id": o["Id"], "name": o["Name"]}
                 for o in result
                 if o["Status"] == "ACTIVE"
             ]

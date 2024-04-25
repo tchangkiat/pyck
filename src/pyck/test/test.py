@@ -3,7 +3,8 @@ from pyck.helpers.taskmanager import TaskManager
 from pyck.utils.styles import purple
 from pyck.aws.account import AwsAccount
 from pyck.aws.ec2 import EC2
-from pyck.aws.organizations import Organizations
+from pyck.aws.organizations import Organization
+from pyck.aws.utils import organization_map
 
 
 def test_task(random_text):
@@ -18,10 +19,22 @@ def test_task_exception():
     raise ex
 
 
+def print_assumed_account_id(aws_account: AwsAccount, assumed_role: str):
+    if aws_account is not None:
+        print(
+            "Assumed Role '"
+            + str(assumed_role)
+            + "' of AWS Account ID: "
+            + str(aws_account)
+        )
+
+
 log = Logging.get_instance()
 log.info(purple("\nTesting Task Manager"))
 tm = TaskManager()
-tm.add_task(test_task, parameters=["hello 1", "hello 2", "hello 3"])
+tm.add_multiple_tasks_by_parameters(
+    test_task, parameters=[["hello 1"], ["hello 2"], ["hello 3"]]
+)
 tm.run_tasks("Task Manager - Don't Wait", wait=False)
 tm2 = TaskManager()
 tm2.add_task(test_task_exception)
@@ -31,12 +44,13 @@ results, exceptions = tm2.run_tasks("Task Manager 2 - Exception")
 log.info(purple("\nTesting AWS-related helpers and utilities"))
 aws_account = AwsAccount.from_profile()
 print("AWS Account ID: " + str(aws_account))
-aws_account = AwsAccount.from_assuming_role("409989946510", "container-baseline-review")
-print("Assumed Role of AWS Account ID: " + str(aws_account))
-ec2_helper = EC2(aws_account)
-valid_regions = ec2_helper.get_valid_regions()
-print("Valid Regions: " + ", ".join(valid_regions))
 print("Accounts in AWS Organizations:")
-org_helper = Organizations(aws_account)
+org_helper = Organization(aws_account)
 accounts = org_helper.get_accounts()
 print(accounts)
+organization_map(
+    aws_account,
+    "container-baseline-review",
+    print_assumed_account_id,
+    ["container-baseline-review"],
+)

@@ -13,6 +13,11 @@ class TaskManager:
         """Add task to run later."""
         self.tasks.append({"function": function, "parameters": parameters})
 
+    def add_multiple_tasks_by_parameters(self, function, parameters: list[list]):
+        """Add multiple tasks (one task per parameter) to run later."""
+        for parameter in parameters:
+            self.tasks.append({"function": function, "parameters": parameter})
+
     def run_tasks(
         self, description: str = "", wait: bool = True, logExceptions=True
     ) -> tuple[list[any], list[Exception]]:
@@ -24,18 +29,10 @@ class TaskManager:
         if description:
             print(description)
         for task in self.tasks:
-            if type(task["parameters"]) is list:
-                futures = futures + [
-                    executor.submit(task["function"], parameter)
-                    for parameter in task["parameters"]
-                ]
+            if task["parameters"] is not None:
+                futures.append(executor.submit(task["function"], *task["parameters"]))
             else:
-                if task["parameters"] is not None:
-                    futures = futures + [
-                        executor.submit(task["function"], task["parameters"])
-                    ]
-                else:
-                    futures = futures + [executor.submit(task["function"])]
+                futures = futures + [executor.submit(task["function"])]
         if wait:
             with alive_bar(len(futures)) as bar:
                 for future in as_completed(futures, timeout=10):
