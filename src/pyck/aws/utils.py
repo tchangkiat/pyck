@@ -18,5 +18,6 @@ def organization_map(
         aws_account = AwsAccount.from_assuming_role(
             account["id"], role_to_assume, aws_cli_profile
         )
-        results.append(func(aws_account, *parameters))
+        if aws_account is not None:
+            results.append(func(aws_account, *parameters))
     return results
