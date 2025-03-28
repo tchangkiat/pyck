@@ -26,8 +26,9 @@ class TaskManager:
         exceptions = []
         executor = ThreadPoolExecutor(max_workers=10)
         futures = []
+        log = Logging.get_instance()
         if description:
-            print(description)
+            log.info(description)
         for task in self.tasks:
             if task["parameters"] is not None:
                 futures.append(executor.submit(task["function"], *task["parameters"]))
@@ -46,7 +47,6 @@ class TaskManager:
             executor.shutdown(wait=False)
         self.tasks = []  # Clear tasks
         if logExceptions:
-            log = Logging.get_instance()
             for exception in exceptions:
                 log.exception(
                     exception,
