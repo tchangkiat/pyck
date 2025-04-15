@@ -36,7 +36,7 @@ class TaskManager:
                 futures = futures + [executor.submit(task["function"])]
         if wait:
             with alive_bar(len(futures)) as bar:
-                for future in as_completed(futures, timeout=10):
+                for future in as_completed(futures, timeout=30):
                     try:
                         results.append(future.result())
                     except:
