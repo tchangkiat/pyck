@@ -19,12 +19,17 @@ class TaskManager:
             self.tasks.append({"function": function, "parameters": parameter})
 
     def run_tasks(
-        self, description: str = "", wait: bool = True, logExceptions=True
+        self,
+        description: str = "",
+        task_timeout: int = 30,
+        max_workers: int = 10,
+        wait: bool = True,
+        logExceptions=True,
     ) -> tuple[list[any], list[Exception]]:
         """Run tasks that are added"""
         results = []
         exceptions = []
-        executor = ThreadPoolExecutor(max_workers=10)
+        executor = ThreadPoolExecutor(max_workers=max_workers)
         futures = []
         log = Logging.get_instance()
         if description:
@@ -36,7 +41,7 @@ class TaskManager:
                 futures = futures + [executor.submit(task["function"])]
         if wait:
             with alive_bar(len(futures)) as bar:
-                for future in as_completed(futures, timeout=30):
+                for future in as_completed(futures, timeout=task_timeout):
                     try:
                         results.append(future.result())
                     except:
